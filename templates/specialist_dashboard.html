@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>{{ page_title|default:"Specialist Dashboard - SkinConnect Center" }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="{{ meta_keywords|default:"Dermatologist Dashboard, Specialist Portal" }}" name="keywords">
+    <meta content="{{ meta_description|default:"Manage your consultations and connect with patients" }}" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ favicon_url|default:'img/favicon.ico' }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    {% for css in lib_stylesheets %}
+        <link href="{% static css %}" rel="stylesheet">
+    {% endfor %}
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-light d-none d-lg-block">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                    <small><i class="fa fa-phone-alt mr-2"></i>{{ site_settings.phone_number }}</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>{{ site_settings.email }}</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-right">
+                <div class="d-inline-flex align-items-center">
+                    {% for social in social_links %}
+                        <a class="text-primary px-2" href="{{ social.url }}" title="{{ social.name }}">
+                            <i class="fab fa-{{ social.icon }}"></i>
+                        </a>
+                    {% empty %}
+                        {% for icon in default_social_icons %}
+                            <a class="text-primary {% if not forloop.last %}px-2{% else %}pl-2{% endif %}" href="#">
+                                <i class="fab fa-{{ icon }}"></i>
+                            </a>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0 sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'specialist_dashboard' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-primary"><span class="text-dark">{{ site_settings.site_name_first }}</span> {{ site_settings.site_name_second }}</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                {% if nav_items %}
+                <div class="navbar-nav m-auto py-0">
+                    {% for item in nav_items %}
+                        <a href="{% url item.url_name %}" class="nav-item nav-link {% if item.is_active %}active{% endif %}">{{ item.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="position-relative">
+                            <i class="fa fa-bell fa-lg"></i>
+                            {% if notifications %}
+                                <span class="badge badge-danger badge-pill notification-badge position-absolute" style="top: -8px; right: -8px;">{{ notifications|length }}</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
+                        <h6 class="dropdown-header">Notifications</h6>
+                        {% for notification in notifications %}
+                            <a class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}"
+                               href="{{ notification.url }}"
+                               data-id="{{ notification.id }}">
+                                <div class="d-flex align-items-center">
+                                    <div class="notification-icon bg-{{ notification.type_class }} text-white rounded-circle p-2 mr-3">
+                                        <i class="fa fa-{{ notification.icon }}"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p class="mb-1 font-weight-bold">{{ notification.title }}</p>
+                                        <p class="small text-muted mb-0">{{ notification.message }}</p>
+                                        <p class="small text-muted">{{ notification.time_ago }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="dropdown-item">
+                                <p class="text-center mb-0">No new notifications</p>
+                            </div>
+                        {% endfor %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-center small" href="{% url 'all_notifications' %}">View All Notifications</a>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center ml-4">
+                    {% if specialist.profile_image %}
+                        <img src="{{ specialist.profile_image.url }}" alt="{{ specialist.get_full_name }}" class="rounded-circle mr-2" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'assets/img/default-profile.jpg' %}" alt="{{ specialist.get_full_name }}" class="rounded-circle mr-2" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% endif %}
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-dark" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ specialist.title }} {{ specialist.get_full_name }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            {% for item in user_dropdown_items %}
+                                {% if item.divider %}
+                                    <div class="dropdown-divider"></div>
+                                {% else %}
+                                    <a class="dropdown-item" href="{% url item.url_name %}">
+                                        <i class="fa fa-{{ item.icon }} mr-2"></i>{{ item.name }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Dashboard Overview Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <h1 class="mb-4">Welcome back, {{ specialist.user.get_full_name }}</h1>
+                    <p class="text-muted">Here's your consultation overview for {{ today|date:"l, F d, Y" }}</p>
+                </div>
+            </div>
+            <div class="row">
+                {% for stat in dashboard_stats %}
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-{{ stat.color }} shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-{{ stat.color }} text-uppercase mb-1">
+                                        {{ stat.title }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stat.count }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-{{ stat.icon }} fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- Dashboard Overview End -->
+
+    <!-- Live Meeting Requests Start -->
+    <div class="container-fluid bg-light py-5">
+        <div class="container py-5">
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <h2 class="text-primary mb-0">{{ instant_meetings_title|default:"Instant Meeting Requests" }}</h2>
+                    <p class="text-muted">{{ instant_meetings_subtitle|default:"Patients waiting for immediate consultation" }}</p>
+                </div>
+                <div class="col-lg-6 text-lg-right">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="availableForInstant" {% if specialist.is_available %}checked{% endif %} data-specialist-id="{{ specialist.id }}">
+                        <label class="form-check-label" for="availableForInstant">
+                            <span class="text-{% if specialist.is_available %}success{% else %}danger{% endif %}"><i class="fa fa-circle"></i></span> Available for Instant Meetings
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            {% for header in urgent_consultations_headers %}
+                                                <th>{{ header }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if urgent_consultations %}
+                                            {% for consultation in urgent_consultations %}
+                                                <tr {% if forloop.first %}class="bg-danger-light"{% endif %}>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            {% if consultation.patient.user.profile_image %}
+                                                                <img src="{{ consultation.patient.user.profile_image.url }}" alt="{{ consultation.patient.user.get_full_name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                            {% else %}
+                                                                <img src="{% static 'assets/img/default-profile.jpg' %}" alt="{{ consultation.patient.user.get_full_name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                            {% endif %}
+                                                            <div class="ml-3">
+                                                                <h6 class="mb-0">{{ consultation.patient.user.get_full_name }}</h6>
+                                                                <small class="text-muted">{{ consultation.created_at|timesince }} ago</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ consultation.time|time:"g:i A" }}</td>
+                                                    <td>{{ consultation.service.name }}</td>
+                                                    <td><span class="badge badge-danger">Urgent</span></td>
+                                                    <td class="text-center">
+                                                        <button class="btn btn-success btn-sm start-meeting" data-id="{{ consultation.id }}">
+                                                            <i class="fa fa-video mr-1"></i> Start Meeting
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="{{ urgent_consultations_headers|length }}" class="text-center py-4">
+                                                    {{ no_urgent_consultations_message|default:"No urgent meeting requests at this time." }}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Live Meeting Requests End -->
+
+    <!-- Today's Appointments Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <h2 class="text-primary mb-0">{{ todays_appointments_title|default:"Today's Appointments" }}</h2>
+                    <p class="text-muted">{{ todays_appointments_subtitle|default:"Scheduled consultations for" }} {{ today|date:"l, F d, Y" }}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            {% for header in todays_consultations_headers %}
+                                                <th>{{ header }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if todays_consultations %}
+                                            {% for consultation in todays_consultations %}
+                                                <tr {% if consultation.status == 'completed' %}class="bg-light"{% endif %}>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            {% if consultation.patient.user.profile_image %}
+                                                                <img src="{{ consultation.patient.user.profile_image.url }}" alt="{{ consultation.patient.user.get_full_name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                            {% else %}
+                                                                <img src="{% static 'assets/img/default-profile.jpg' %}" alt="{{ consultation.patient.user.get_full_name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                            {% endif %}
+                                                            <div class="ml-3">
+                                                                <h6 class="mb-0">{{ consultation.patient.user.get_full_name }}</h6>
+                                                                <small class="text-muted">ID: {{ consultation_id_prefix|default:"SCC" }}{{ consultation.id }}</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ consultation.time|time:"g:i A" }}</td>
+                                                    <td>{{ consultation.service.name }}</td>
+                                                    <td>
+                                                        {% include "includes/consultation_status_badge.html" with status=consultation.status %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {% include "includes/consultation_actions.html" with consultation=consultation %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="{{ todays_consultations_headers|length }}" class="text-center py-4">
+                                                    {{ no_todays_consultations_message|default:"No appointments scheduled for today." }}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Today's Appointments End -->
+
+    <!-- Modals -->
+    <!-- View Details Modal -->
+    <div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="viewDetailsModalLabel">{{ view_details_modal_title|default:"Appointment Details" }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-white">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="patientDetailsContainer">
+                        <!-- Content will be loaded dynamically via AJAX -->
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <p class="mt-2">{{ loading_patient_details_message|default:"Loading patient details..." }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success start-meeting-modal">
+                        <i class="fa fa-video mr-1"></i> Start Meeting
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Notes Modal -->
+    <div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="notesModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="notesModalLabel">{{ notes_modal_title|default:"Consultation Notes" }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="text-white">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="notesContainer">
+              <!-- Content will be loaded dynamically via AJAX -->
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-2">{{ loading_notes_message|default:"Loading consultation notes..." }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="editNotesBtn">
+              <i class="fa fa-edit mr-1"></i> Edit Notes
+            </button>
+            <button type="button" class="btn btn-success" id="saveNotesBtn" style="display: none;">
+              <i class="fa fa-save mr-1"></i> Save Changes
+            </button>
+            <button type="button" class="btn btn-danger" id="cancelEditBtn" style="display: none;">
+              <i class="fa fa-times mr-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modals -->
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    {% for js in lib_scripts %}
+        <script src="{% static js %}"></script>
+    {% endfor %}
+
+    <!-- Footer Start -->
+    <div class="footer container-fluid position-relative bg-dark py-5" style="margin-top: 90px;">
+        <div class="container pt-5">
+            <div class="row">
+                <div class="col-lg-6 pr-lg-5 mb-5">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="mb-3 text-white"><span class="text-primary">Skin</span>Connect</h1>
+                    </a>
+                    <p>
+                        SkinConnect is a comprehensive dermatology management system designed to enhance patient care, streamline appointments,
+                        and provide accurate skin health diagnostics. Our platform integrates modern technology to support both dermatologists
+                        and patients in achieving optimal skin health.
+                    </p>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>Kilifi, Kenya</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+254 112 694 614</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@skinconnect.com</p>
+                    <div class="d-flex justify-content-start mt-4">
+                        <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-lg btn-primary btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 pl-lg-5">
+                    <div class="row">
+                        <div class="col-sm-6 mb-5">
+                            <h5 class="text-white text-uppercase mb-4">Quick Links</h5>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                                <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 mb-5">
+                            <h5 class="text-white text-uppercase mb-4">Our Services</h5>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Skin Consultation</a>
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Acne Treatment</a>
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Laser Therapy</a>
+                                <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Anti-Aging Solutions</a>
+                                <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Dermatology Insights</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 mb-5">
+                            <h5 class="text-white text-uppercase mb-4">Newsletter</h5>
+                            <div class="w-100">
+                                <div class="input-group">
+                                    <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary px-4">Sign Up</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Copyright Start -->
+    <div class="container-fluid bg-dark text-light border-top border-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                    <p class="m-0">Copyright &copy; {{ current_year }} <a href="#">{{ site_settings.site_name_first }} {{ site_settings.site_name_second }}</a>. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-right">
+                    <p class="m-0">Designed by <a href="#">{{ site_designer|default:"HealthTech Solutions" }}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Copyright End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Define URLs
+            const toggleAvailabilityUrl = '{% url "toggle_specialist_availability" %}';
+            const consultationDetailsUrl = '{% url "consultation_details" consultation_id="CONSULTATION_ID" %}';
+            const consultationNotesUrl = '{% url "consultation_notes" consultation_id="CONSULTATION_ID" %}';
+            const updateNotesUrl = '{% url "update_consultation_notes" consultation_id="CONSULTATION_ID" %}';
+            const meetingUrl = '{% url "start_meeting" consultation_id="CONSULTATION_ID" %}';
+            const markNotificationReadUrl = '{% url "mark_notification_read" %}';
+            const getNewNotificationsUrl = '{% url "get_new_notifications" %}';
+            const notificationSoundUrl = '{% static "assets/sounds/notification.mp3" %}';
+            const notificationPollingInterval = 30000; // 30 seconds
+            const csrfToken = '{{ csrf_token }}';
+
+            // Handle availability toggle
+            $('#availableForInstant').change(function() {
+                const isAvailable = $(this).is(':checked');
+                const specialistId = $(this).data('specialist-id');
+
+                $.ajax({
+                    url: toggleAvailabilityUrl,
+                    type: "POST",
+                    data: {
+                        'specialist_id': specialistId,
+                        'is_available': isAvailable,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const statusLabel = $('#availableForInstant').next().find('span');
+                            if (isAvailable) {
+                                statusLabel.removeClass('text-danger').addClass('text-success');
+                            } else {
+                                statusLabel.removeClass('text-success').addClass('text-danger');
+                            }
+
+                            // Show notification or toast
+                            showToast(response.message, 'success');
+                        } else {
+                            showToast('Failed to update availability status', 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('An error occurred. Please try again.', 'error');
+                    }
+                });
+            });
+
+            // Load patient details when modal is opened
+            $('#viewDetailsModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const consultationId = button.data('id');
+                const modal = $(this);
+
+                // Set the consultation ID for the Start Meeting button
+                modal.find('.start-meeting-modal').data('id', consultationId);
+
+                // Load patient details via AJAX
+                $.ajax({
+                    url: consultationDetailsUrl.replace('CONSULTATION_ID', consultationId),
+                    type: "GET",
+                    success: function(response) {
+                        $('#patientDetailsContainer').html(response);
+                    },
+                    error: function() {
+                        $('#patientDetailsContainer').html('<div class="alert alert-danger">Error loading patient details.</div>');
+                    }
+                });
+            });
+
+            // Load consultation notes when notes modal is opened
+            $('#notesModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const consultationId = button.data('id');
+
+                // Store consultation ID for edit button
+                $('#editNotesBtn').data('id', consultationId);
+
+                // Load notes via AJAX
+                $.ajax({
+                    url: consultationNotesUrl.replace('CONSULTATION_ID', consultationId),
+                    type: "GET",
+                    success: function(response) {
+                        $('#notesContainer').html(response);
+                    },
+                    error: function() {
+                        $('#notesContainer').html('<div class="alert alert-danger">Error loading consultation notes.</div>');
+                    }
+                });
+            });
+
+            // Handle start meeting buttons
+            $('.start-meeting, .start-meeting-modal').click(function() {
+                const consultationId = $(this).data('id');
+                window.location.href = meetingUrl.replace('CONSULTATION_ID', consultationId);
+            });
+
+            // Edit notes button
+            $('#editNotesBtn').click(function() {
+                const consultationId = $(this).data('id');
+                const notesText = $('#consultation-notes-content').text().trim();
+
+                // Replace the notes display with an editable textarea
+                $('#notesContainer').html(`
+                    <textarea id="editNotesTextarea" class="form-control" rows="10">${notesText}</textarea>
+                `);
+
+                // Show save and cancel buttons, hide edit button
+                $('#saveNotesBtn').show();
+                $('#cancelEditBtn').show();
+                $('#editNotesBtn').hide();
+            });
+
+            // Cancel edit button
+            $('#cancelEditBtn').click(function() {
+                const consultationId = $('#editNotesBtn').data('id');
+
+                // Reload the original notes
+                $.ajax({
+                    url: consultationNotesUrl.replace('CONSULTATION_ID', consultationId),
+                    type: "GET",
+                    success: function(response) {
+                        $('#notesContainer').html(response);
+
+                        // Reset buttons
+                        $('#saveNotesBtn').hide();
+                        $('#cancelEditBtn').hide();
+                        $('#editNotesBtn').show();
+                    },
+                    error: function() {
+                        $('#notesContainer').html('<div class="alert alert-danger">Error loading consultation notes.</div>');
+
+                        // Reset buttons
+                        $('#saveNotesBtn').hide();
+                        $('#cancelEditBtn').hide();
+                        $('#editNotesBtn').show();
+                    }
+                });
+            });
+
+            // Save notes button
+            $('#saveNotesBtn').click(function() {
+                const consultationId = $('#editNotesBtn').data('id');
+                const updatedNotes = $('#editNotesTextarea').val();
+
+                // Show loading indicator
+                $('#notesContainer').html(`
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Saving...</span>
+                        </div>
+                        <p class="mt-2">Saving your changes...</p>
+                    </div>
+                `);
+
+                // Save notes via AJAX
+                $.ajax({
+                    url: updateNotesUrl.replace('CONSULTATION_ID', consultationId),
+                    type: "POST",
+                    data: {
+                        'notes': updatedNotes,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Reload the notes with updated content
+                            $('#notesContainer').html(response.notes_html);
+                            showToast('Notes updated successfully', 'success');
+                        } else {
+                            $('#notesContainer').html(`
+                                <div class="alert alert-danger">
+                                    ${response.message || 'Error saving notes.'}
+                                </div>
+                            `);
+                            showToast('Failed to update notes', 'error');
+                        }
+
+                        // Reset buttons
+                        $('#saveNotesBtn').hide();
+                        $('#cancelEditBtn').hide();
+                        $('#editNotesBtn').show();
+                    },
+                    error: function() {
+                        $('#notesContainer').html('<div class="alert alert-danger">Failed to save notes. Please try again.</div>');
+                        showToast('An error occurred while saving notes', 'error');
+
+                        // Reset buttons
+                        $('#saveNotesBtn').hide();
+                        $('#cancelEditBtn').hide();
+                        $('#editNotesBtn').show();
+                    }
+                });
+            });
+
+            // Handle notification clicks
+            $('.notification-item').click(function(e) {
+                e.preventDefault();
+                const notificationId = $(this).data('id');
+                const notificationUrl = $(this).attr('href');
+
+                // Mark notification as read
+                $.ajax({
+                    url: markNotificationReadUrl,
+                    type: "POST",
+                    data: {
+                        'notification_id': notificationId,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function() {
+                        // Navigate to the notification URL
+                        window.location.href = notificationUrl;
+                    },
+                    error: function() {
+                        // Navigate anyway even if marking as read fails
+                        window.location.href = notificationUrl;
+                    }
+                });
+            });
+
+            // Function to show toast notifications
+            function showToast(message, type = 'info') {
+                // Check if toast container exists, create if not
+                if ($('#toast-container').length === 0) {
+                    $('body').append('<div id="toast-container" class="position-fixed bottom-0 right-0 p-3" style="z-index: 9999; right: 0; bottom: 0;"></div>');
+                }
+
+                // Create a unique ID for this toast
+                const toastId = 'toast-' + Date.now();
+
+                // Determine the background class based on type
+                let bgClass = 'bg-info';
+                if (type === 'success') bgClass = 'bg-success';
+                if (type === 'error') bgClass = 'bg-danger';
+                if (type === 'warning') bgClass = 'bg-warning';
+
+                // Create toast HTML
+                const toastHtml = `
+                    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                        <div class="toast-header ${bgClass} text-white">
+                            <strong class="mr-auto">SkinConnect</strong>
+                            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+
+                // Append and show the toast
+                $('#toast-container').append(toastHtml);
+                $(`#${toastId}`).toast('show');
+
+                // Remove the toast when hidden
+                $(`#${toastId}`).on('hidden.bs.toast', function() {
+                    $(this).remove();
+                });
+            }
+
+            // Check for new notifications periodically
+            let notificationSound = new Audio(notificationSoundUrl);
+
+            function checkForNewNotifications() {
+                $.ajax({
+                    url: getNewNotificationsUrl,
+                    type: "GET",
+                    success: function(response) {
+                        if (response.new_notifications && response.new_notifications.length > 0) {
+                            // Play notification sound
+                            notificationSound.play();
+
+                            // Update badge count
+                            const currentCount = parseInt($('.notification-badge').text()) || 0;
+                            const newCount = currentCount + response.new_notifications.length;
+                            $('.notification-badge').text(newCount).show();
+
+                            // Add new notifications to dropdown
+                            const notificationDropdown = $('.dropdown-menu[aria-labelledby="notificationDropdown"]');
+                            const noNotificationsItem = notificationDropdown.find('.dropdown-item:contains("No new notifications")');
+
+                            if (noNotificationsItem.length) {
+                                noNotificationsItem.remove();
+                            }
+
+                            // Add each new notification to the top of the list
+                            response.new_notifications.forEach(function(notification) {
+                                const notificationHtml = `
+                                    <a class="dropdown-item notification-item unread"
+                                       href="${notification.url}"
+                                       data-id="${notification.id}">
+                                        <div class="d-flex align-items-center">
+                                            <div class="notification-icon bg-${notification.type_class} text-white rounded-circle p-2 mr-3">
+                                                <i class="fa fa-${notification.icon}"></i>
+                                            </div>
+                                            <div class="notification-content">
+                                                <p class="mb-1 font-weight-bold">${notification.title}</p>
+                                                <p class="small text-muted mb-0">${notification.message}</p>
+                                                <p class="small text-muted">just now</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                `;
+
+                                notificationDropdown.find('h6.dropdown-header').after(notificationHtml);
+
+                                // Also show a toast for each new notification
+                                showToast(notification.title + ': ' + notification.message);
+                            });
+
+                            // Bind click event to new notification items
+                            $('.notification-item.unread').click(function(e) {
+                                e.preventDefault();
+                                const notificationId = $(this).data('id');
+                                const notificationUrl = $(this).attr('href');
+
+                                // Mark notification as read
+                                $.ajax({
+                                    url: markNotificationReadUrl,
+                                    type: "POST",
+                                    data: {
+                                        'notification_id': notificationId,
+                                        'csrfmiddlewaretoken': csrfToken
+                                    },
+                                    success: function() {
+                                        // Navigate to the notification URL
+                                        window.location.href = notificationUrl;
+                                    },
+                                    error: function() {
+                                        // Navigate anyway even if marking as read fails
+                                        window.location.href = notificationUrl;
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+
+            // Initial check and then set interval
+            checkForNewNotifications();
+            setInterval(checkForNewNotifications, notificationPollingInterval);
+
+            // Back to top button
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    $('.back-to-top').fadeIn('slow');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                }
+            });
+
+            $('.back-to-top').click(function() {
+                $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+                return false;
+            });
+
+            });
+            </script>

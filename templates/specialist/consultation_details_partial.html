@@ -1,0 +1,105 @@
+<div class="patient-details">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                {% if patient.user.profile_image %}
+                    <img src="{{ patient.user.profile_image.url }}" alt="{{ patient.user.get_full_name }}" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'assets/img/default-profile.jpg' %}" alt="{{ patient.user.get_full_name }}" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+                <h5 class="mt-3 mb-0">{{ patient.user.get_full_name }}</h5>
+                <p class="text-muted">Patient ID: {{ patient.id }}</p>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h5 class="border-bottom pb-2">Patient Information</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Age:</strong> {{ patient.age }}</p>
+                    <p class="mb-1"><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ patient.user.phone }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Email:</strong> {{ patient.user.email }}</p>
+                    <p class="mb-1"><strong>Joined:</strong> {{ patient.user.date_joined|date:"M d, Y" }}</p>
+                    <p class="mb-1"><strong>Consultation Count:</strong> {{ patient.consultations.count }}</p>
+                </div>
+            </div>
+
+            <h5 class="border-bottom pb-2">Consultation Details</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Service:</strong> {{ consultation.service.name }}</p>
+                    <p class="mb-1"><strong>Date:</strong> {{ consultation.date|date:"l, F d, Y" }}</p>
+                    <p class="mb-1"><strong>Time:</strong> {{ consultation.time|time:"g:i A" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Status:</strong> {% include "includes/consultation_status_badge.html" with status=consultation.status %}</p>
+                    <p class="mb-1"><strong>Priority:</strong> {% if consultation.is_urgent %}<span class="badge badge-danger">Urgent</span>{% else %}<span class="badge badge-info">Regular</span>{% endif %}</p>
+                    <p class="mb-1"><strong>Created:</strong> {{ consultation.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+
+            {% if consultation.chief_complaint %}
+            <h5 class="border-bottom pb-2">Chief Complaint</h5>
+            <p>{{ consultation.chief_complaint }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if medical_history %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <h5 class="border-bottom pb-2">Medical History</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Condition</th>
+                            <th>Since</th>
+                            <th>Medications</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for history in medical_history %}
+                        <tr>
+                            <td>{{ history.condition }}</td>
+                            <td>{{ history.diagnosed_date|date:"M Y" }}</td>
+                            <td>{{ history.medications|default:"None" }}</td>
+                            <td>{{ history.notes|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if consultation.attachments.exists %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <h5 class="border-bottom pb-2">Attached Files</h5>
+            <div class="row">
+                {% for attachment in consultation.attachments.all %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-file-{{ attachment.get_icon_class }} fa-2x text-primary mr-3"></i>
+                                <div>
+                                    <h6 class="mb-0">{{ attachment.filename }}</h6>
+                                    <small class="text-muted">{{ attachment.filesize|filesizeformat }}</small>
+                                </div>
+                            </div>
+                            <a href="{{ attachment.file.url }}" class="btn btn-sm btn-outline-primary mt-2" target="_blank">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

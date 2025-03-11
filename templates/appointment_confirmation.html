@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>SkinConnect - Booking Confirmation</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1d2434;
+            --secondary: #4777f5;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .confirmation-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .booking-details {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-pay {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: #28a745;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar (reuse the existing navbar code) -->
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'home' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-primary"><span class="text-dark">SkinConnect</span> Center</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav m-auto py-0">
+                    <a href="{% url 'home' %}" class="nav-item nav-link">Home</a>
+                    <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
+                    <a href="{% url 'service' %}" class="nav-item nav-link">Services</a>
+                    <a href="{% url 'price' %}" class="nav-item nav-link">Pricing</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a href="{% url 'appointment' %}" class="dropdown-item active">Appointment</a>
+                            <a href="{% url 'opening' %}" class="dropdown-item">Open Hours</a>
+                            <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
+                            <a href="{% url 'testimonial' %}" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="{% url 'appointment' %}" class="btn btn-primary d-none d-lg-block">Book Now</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <div class="container">
+        <div class="confirmation-container">
+            <div class="confirmation-header">
+                <h1 class="text-primary mb-4">Booking Confirmation</h1>
+                <div class="status-badge">
+                    <i class="fas fa-check-circle mr-2"></i>Booking Confirmed
+                </div>
+            </div>
+
+            <div class="booking-details">
+                <div class="detail-row">
+                    <span class="detail-label">Booking ID</span>
+                    <span class="detail-value">#{{ appointment.id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Name</span>
+                    <span class="detail-value">{{ appointment.name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Service</span>
+                    <span class="detail-value">{{ appointment.service }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value">{{ appointment.appointment_date }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Time</span>
+                    <span class="detail-value">{{ appointment.appointment_time }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">Pending Payment</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'edit_appointment' appointment.id %}" class="btn btn-edit text-white">Edit Appointment</a>
+                    <i class="fas fa-edit mr-2"></i>Edit
+                </a>
+                <a href="{% url 'delete_appointment' appointment.id %}" class="btn btn-delete text-white">
+                    <i class="fas fa-trash-alt mr-2"></i>Delete
+                </a>
+                <a href="{% url 'pay' appointment.id %}" class="btn btn-pay text-white">
+                    <i class="fas fa-credit-card mr-2"></i>Pay Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (reuse the existing footer code) <!-- Footer Start -->
+        <div class="footer container-fluid position-relative bg-dark py-5" style="margin-top: 90px;">
+            <div class="container pt-5">
+                <div class="row">
+                    <div class="col-lg-6 pr-lg-5 mb-5">
+                        <a href="index.html" class="navbar-brand">
+                            <h1 class="mb-3 text-white"><span class="text-primary">Skin</span>Connect</h1>
+                        </a>
+                        <p>
+                            DermaCare is a comprehensive dermatology management system designed to enhance patient care, streamline appointments,
+                            and provide accurate skin health diagnostics. Our platform integrates modern technology to support both dermatologists
+                            and patients in achieving optimal skin health.
+                        </p>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>Kilifi, Kenya</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>+254 112 694 614</p>
+                        <p><i class="fa fa-envelope mr-2"></i>info@skinconnect.com</p>
+                        <div class="d-flex justify-content-start mt-4">
+                            <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 pl-lg-5">
+                        <div class="row">
+                            <div class="col-sm-6 mb-5">
+                                <h5 class="text-white text-uppercase mb-4">Quick Links</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-5">
+                                <h5 class="text-white text-uppercase mb-4">Our Services</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Skin Consultation</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Acne Treatment</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Laser Therapy</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Anti-Aging Solutions</a>
+                                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Dermatology Insights</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-5">
+                                <h5 class="text-white text-uppercase mb-4">Newsletter</h5>
+                                <div class="w-100">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary px-4">Sign Up</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid bg-dark text-light border-top py-4" style="border-color: rgba(256, 256, 256, .15) !important;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                        <p class="m-0 text-white">&copy; <a href="#">SkinConnect</a>. All Rights Reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-right">
+                        <p class="m-0 text-white">Designed by <a href="#">Your Team</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Footer End -->-->
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

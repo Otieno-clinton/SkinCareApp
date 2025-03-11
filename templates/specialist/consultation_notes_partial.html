@@ -1,0 +1,7 @@
+<div id="consultation-notes-content">
+    {% if notes %}
+        {{ notes|linebreaksbr }}
+    {% else %}
+        <p class="text-muted">No notes available for this consultation.</p>
+    {% endif %}
+</div>

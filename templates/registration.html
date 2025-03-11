@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title>Register - SkinConnect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .text-primary {
+            color: #F2784B !important;
+        }
+
+        .bg-primary {
+            background-color: #1d2434 !important;
+        }
+
+        .btn-primary {
+            background-color: #F2784B;
+            border-color: #F2784B;
+        }
+
+        .btn-primary:hover {
+            background-color: #e16a3e;
+            border-color: #e16a3e;
+        }
+
+        .border-primary {
+            border-color: #F2784B !important;
+        }
+    </style>
+
+<body class="bg-light">
+    <!-- Toast Container -->
+    <div class="position-fixed" style="top: 20px; right: 20px; z-index: 1000;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">
+                    <div class="toast-header bg-{% if message.tags %}{{ message.tags }}{% else %}success{% endif %} text-white">
+                        <strong class="mr-auto">SkinConnect</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Header Start -->
+    <div class="jumbotron jumbotron-fluid text-white text-center py-5 mb-0" style="background: linear-gradient(rgba(33, 30, 28, 0.7), rgba(33, 30, 28, 0.7)), url('/api/placeholder/1920/400'); background-position: center; background-size: cover;">
+        <div class="container">
+            <h3 class="display-4 mb-3">Create an Account</h3>
+            <p><a class="text-white" href="{% url 'home' %}">Home</a> <i class="far fa-circle px-2"></i> Register</p>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Registration Form Start -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm border-0 rounded-lg">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h4 class="m-0">Join SkinConnect</h4>
+                        <p class="small mt-2 mb-0">Create your patient account to book virtual consultations with skin specialists</p>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <!-- Account Type Selection -->
+                                <div class="col-12 mb-4">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">I am a:</label>
+                                        <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+                                            <label class="btn btn-outline-primary active flex-grow-1">
+                                                <input type="radio" name="account_type" value="patient" checked> Patient
+                                            </label>
+                                            <label class="btn btn-outline-primary flex-grow-1">
+                                                <input type="radio" name="account_type" value="specialist"> Specialist
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Basic Information -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="first_name">First Name <span class="text-danger">*</span></label>
+                                        <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Enter your first name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="last_name">Last Name <span class="text-danger">*</span></label>
+                                        <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Enter your last name" required>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">Email Address <span class="text-danger">*</span></label>
+                                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone_number" class="form-control" placeholder="Enter your phone number">
+                                    </div>
+                                </div>
+
+                                <!-- Patient-specific fields -->
+                                <div class="col-md-6 patient-field">
+                                    <div class="form-group">
+                                        <label for="date_of_birth">Date of Birth</label>
+                                        <input type="date" id="date_of_birth" name="date_of_birth" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12 patient-field">
+                                    <div class="form-group">
+                                        <label for="medical_history">Medical History (Optional)</label>
+                                        <textarea id="medical_history" name="medical_history" class="form-control" rows="3" placeholder="Any important medical history or skin conditions you'd like us to know about"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Specialist-specific fields (initially hidden) -->
+                                <div class="col-md-6 specialist-field d-none">
+                                    <div class="form-group">
+                                        <label for="specialization">Specialization <span class="text-danger">*</span></label>
+                                        <input type="text" id="specialization" name="specialization" class="form-control" placeholder="E.g., Dermatologist, Cosmetic Surgeon">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 specialist-field d-none">
+                                    <div class="form-group">
+                                        <label for="years_of_experience">Years of Experience <span class="text-danger">*</span></label>
+                                        <input type="number" id="years_of_experience" name="years_of_experience" class="form-control" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 specialist-field d-none">
+                                    <div class="form-group">
+                                        <label for="qualification">Qualifications <span class="text-danger">*</span></label>
+                                        <input type="text" id="qualification" name="qualification" class="form-control" placeholder="E.g., MD, Board Certified Dermatologist">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 specialist-field d-none">
+                                    <div class="form-group">
+                                        <label for="bio">Professional Bio <span class="text-danger">*</span></label>
+                                        <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Brief description of your professional background and expertise"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 specialist-field d-none">
+                                    <div class="form-group">
+                                        <label for="profile_image">Profile Image</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="profile_image" name="profile_image">
+                                            <label class="custom-file-label" for="profile_image">Choose file</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="password">Password <span class="text-danger">*</span></label>
+                                        <input type="password" id="password" name="password1" class="form-control" placeholder="Enter a strong password" required>
+                                        <small class="form-text text-muted">Must be at least 8 characters with letters and numbers</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="confirm_password">Confirm Password <span class="text-danger">*</span></label>
+                                        <input type="password" id="confirm_password" name="password2" class="form-control" placeholder="Re-enter your password" required>
+                                    </div>
+                                </div>
+
+                                <!-- Terms & Conditions -->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="terms" name="terms" required>
+                                            <label class="custom-control-label" for="terms">
+                                                I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">Terms & Conditions</a> and <a href="#" data-toggle="modal" data-target="#privacyModal">Privacy Policy</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-block py-2">Create Account</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Divider -->
+                        <div class="text-center position-relative my-4">
+                            <hr>
+                            <span class="position-absolute bg-white px-3" style="top: -12px; left: 50%; transform: translateX(-50%);">or</span>
+                        </div>
+
+                        <!-- Login Redirect -->
+                        <p class="text-center mb-0">
+                            Already have an account? <a href="{% url 'login' %}" class="text-primary">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Registration Form End -->
+
+    <!-- Terms & Conditions Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">Terms & Conditions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>These are the terms and conditions for using SkinConnect...</p>
+                    <!-- Add your terms content here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" role="dialog" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This Privacy Policy describes how SkinConnect collects and uses your personal information...</p>
+                    <!-- Add your privacy policy content here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Show toasts
+            $('.toast').toast('show');
+
+            // Handle account type toggle
+            $('input[name="account_type"]').change(function() {
+                if ($(this).val() === 'patient') {
+                    $('.patient-field').removeClass('d-none');
+                    $('.specialist-field').addClass('d-none');
+                } else {
+                    $('.patient-field').addClass('d-none');
+                    $('.specialist-field').removeClass('d-none');
+                }
+            });
+
+            // Handle file input display
+            $('.custom-file-input').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').html(fileName || "Choose file");
+            });
+
+            // Password confirmation validation
+            $('#confirm_password').on('keyup', function() {
+                if ($('#password').val() === $('#confirm_password').val()) {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

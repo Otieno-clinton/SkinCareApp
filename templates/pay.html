@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>Consultation Payment</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4777f5;
+            --secondary: #1d2434;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            color: #4777f5;
+            font-weight: 600;
+        }
+
+        .payment-option {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option.active {
+            background-color: rgba(71, 119, 245, 0.05);
+        }
+
+        .payment-steps li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .btn-mpesa {
+            background-color: #4CAF50;
+        }
+
+        .btn-mpesa:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="text-primary mb-4">Consultation Payment</h1>
+            <span class="badge badge-warning py-2 px-3 rounded-pill">
+                <i class="fas fa-clock mr-2"></i>{{ payment.status|default:"Pending" }}
+            </span>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-lg">
+                    <div class="card-body">
+                        <h4 class="mb-4">Consultation Summary</h4>
+                        <div class="bg-light p-4 rounded">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">{{ consultation.service|default:"Medical Consultation" }}</h5>
+                                <span class="price-tag">KES {{ amount|default:"2,500" }}</span>
+                            </div>
+                            <hr>
+                            <p><strong>Consultation ID:</strong> {{ consultation.id|default:"CON-12345" }}</p>
+                            <p><strong>Date:</strong> {{ consultation.appointment_date|default:"March 10, 2025" }}</p>
+                            <p><strong>Time:</strong> {{ consultation.appointment_time|default:"10:00 AM" }}</p>
+                            <p><strong>Patient:</strong> {{ consultation.name|default:"John Doe" }}</p>
+                            <p><strong>Email:</strong> {{ consultation.email|default:"patient@example.com" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0 rounded-lg">
+                    <div class="card-body">
+                        <h4 class="text-secondary mb-4">Payment Method</h4>
+
+                        <form method="POST" id="paymentForm" action="{% url 'stk' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="consultation_id" value="{{ consultation.id }}">
+                            <input type="hidden" name="amount" value="{{ amount|default:'2' }}">
+                            <input type="hidden" name="payment_method" id="payment_method" value="mobile_money">
+
+                            <div class="mb-4">
+                                <div class="payment-option active border rounded p-3 mb-3" data-method="mobile_money">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'img/mpesa-icon.png' %}" alt="M-Pesa" class="mr-3" height="40">
+                                        <div>
+                                            <strong>Mobile Money (M-Pesa)</strong>
+                                            <p class="mb-0 text-muted small">Pay directly with your M-Pesa account</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="payment-option border rounded p-3 mb-3" data-method="credit_card">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'img/credit-card-icon.png' %}" alt="Credit Card" class="mr-3" height="40">
+                                        <div>
+                                            <strong>Credit Card</strong>
+                                            <p class="mb-0 text-muted small">Pay with Visa, Mastercard, or American Express</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="payment-option border rounded p-3 mb-3" data-method="debit_card">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'img/debit-card-icon.png' %}" alt="Debit Card" class="mr-3" height="40">
+                                        <div>
+                                            <strong>Debit Card</strong>
+                                            <p class="mb-0 text-muted small">Pay with your bank debit card</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="payment-option border rounded p-3" data-method="paypal">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'img/paypal-icon.png' %}" alt="PayPal" class="mr-3" height="40">
+                                        <div>
+                                            <strong>PayPal</strong>
+                                            <p class="mb-0 text-muted small">Pay using your PayPal account</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border border-success rounded p-4 mt-4" id="mobile_money_section">
+                                <div class="text-center mb-4">
+                                    <img src="{% static 'img/mpesa-logo.png' %}" alt="M-Pesa Logo" style="max-width: 150px;">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light">+254</span>
+                                    </div>
+                                    <input type="tel" class="form-control" name="phone_number"
+                                           placeholder="Enter M-Pesa number" pattern="[0-9]{9}"
+                                           title="Please enter 9 digits without leading zero"
+                                           required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="transaction_id">Transaction ID (optional)</label>
+                                    <input type="text" class="form-control" id="transaction_id" name="transaction_id"
+                                           placeholder="If you already have a transaction ID">
+                                </div>
+
+                                <ol class="payment-steps pl-4">
+                                    <li class="position-relative mb-3 pl-4">Enter your M-Pesa number above</li>
+                                    <li class="position-relative mb-3 pl-4">Click "Pay Now" button below</li>
+                                    <li class="position-relative mb-3 pl-4">Enter your M-Pesa PIN on the prompt</li>
+                                    <li class="position-relative mb-3 pl-4">Wait for payment confirmation</li>
+                                </ol>
+
+                                <button type="submit" class="btn btn-mpesa btn-block text-white font-weight-medium py-3">
+                                    <i class="fas fa-mobile-alt mr-2"></i>Pay KES {{ amount|default:"2" }} Now
+                                </button>
+                            </div>
+
+                            <!-- Other payment sections would go here but are hidden by default -->
+                            <div id="credit_card_section" class="mt-4" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-2"></i>Credit card payment is currently under maintenance. Please use M-Pesa or another payment method.
+                                </div>
+                            </div>
+
+                            <div id="debit_card_section" class="mt-4" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-2"></i>Debit card payment is currently under maintenance. Please use M-Pesa or another payment method.
+                                </div>
+                            </div>
+
+                            <div id="paypal_section" class="mt-4" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-2"></i>PayPal payment is currently under maintenance. Please use M-Pesa or another payment method.
+                                </div>
+                            </div>
+
+                            {% if messages %}
+                            <div class="mt-4">
+                                {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Phone number formatting
+        document.querySelector('input[name="phone_number"]').addEventListener('input', function(e) {
+            let input = e.target;
+            input.value = input.value.replace(/\D/g, '').substring(0, 9);
+        });
+
+        // Payment method selection
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                paymentOptions.forEach(opt => opt.classList.remove('active'));
+
+                // Add active class to clicked option
+                this.classList.add('active');
+
+                // Update hidden input with selected payment method
+                const method = this.getAttribute('data-method');
+                document.getElementById('payment_method').value = method;
+
+                // Hide all payment sections
+                document.getElementById('mobile_money_section').style.display = 'none';
+                document.getElementById('credit_card_section').style.display = 'none';
+                document.getElementById('debit_card_section').style.display = 'none';
+                document.getElementById('paypal_section').style.display = 'none';
+
+                // Show selected payment section
+                document.getElementById(method + '_section').style.display = 'block';
+
+                // Disable submit button for non-implemented methods
+                const submitBtn = document.querySelector('button[type="submit"]');
+                if (method === 'mobile_money') {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-mobile-alt mr-2"></i>Pay KES {{ amount|default:"2,500" }} Now';
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'This payment method is not available';
+                }
+            });
+        });
+
+        // Form submission handling
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            // Only proceed with form submission if mobile_money is selected
+            if (document.getElementById('payment_method').value === 'mobile_money') {
+                const button = this.querySelector('button[type="submit"]');
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing Payment...';
+            } else {
+                e.preventDefault();
+                alert('Please select M-Pesa as your payment method.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>Virtual Consultation-SkinConnect Center</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Virtual Consultation, Dermatology, Skin Care" name="keywords">
+    <meta content="Schedule a virtual consultation with our skin care specialists" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+    .card-header {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .card-header:hover {
+        background-color: #f0f8ff !important;
+    }
+    .btn-link {
+        width: 100%;
+        text-align: left;
+        font-weight: 500;
+        color: #333;
+        text-decoration: none !important;
+        position: relative;
+        padding-right: 30px;
+    }
+    .btn-link:after {
+        content: "+";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .btn-link:not(.collapsed):after {
+        content: "-";
+    }
+    .btn-link.active {
+        color: #17a2b8;
+    }
+    .card-body {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-left: 3px solid #17a2b8;
+    }
+    .collapse.show {
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+    /* Enhanced styling */
+    .section-spacing {
+        padding: 5rem 0;
+    }
+    .shadow-custom {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+    .rounded-custom {
+        border-radius: 0.5rem;
+    }
+    .bg-light-custom {
+        background-color: rgba(240, 248, 255, 0.6);
+    }
+    .step-card {
+        transition: all 0.3s ease;
+    }
+    .step-card:hover {
+        transform: translateY(-5px);
+    }
+    .form-control:focus {
+        border-color: #17a2b8;
+        box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+    }
+    .custom-file-label::after {
+        background-color: #17a2b8;
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-light d-none d-lg-block">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+254 112 694 614</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@skinconnect.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-primary px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-primary px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-primary px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-primary px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-primary pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0 sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="index.html" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-primary"><span class="text-dark">SkinConnect</span> Center</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav m-auto py-0">
+                    <a href="{% url 'home' %}" class="nav-item nav-link">Home</a>
+                    <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
+                    <a href="{% url 'service' %}" class="nav-item nav-link">Services</a>
+                    <a href="{% url 'price' %}" class="nav-item nav-link">Pricing</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a href="{% url 'appointment' %}" class="dropdown-item">Appointment</a>
+                            <a href="{% url 'virtual' %}" class="dropdown-item active">Virtual Consultation</a>
+                            <a href="{% url 'opening' %}" class="dropdown-item">Open Hours</a>
+                            <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
+                            <a href="{% url 'testimonial' %}" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="{% url 'virtual' %}" class="btn btn-primary d-none d-lg-block">Virtual Consult</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Header Start -->
+    <div class="jumbotron jumbotron-fluid bg-jumbotron mb-0">
+        <div class="container text-center py-5">
+            <h3 class="text-white display-3 mb-4">Virtual Consultation</h3>
+            <div class="d-inline-flex align-items-center text-white">
+                <p class="m-0"><a class="text-white" href="{% url 'home' %}">Home</a></p>
+                <i class="far fa-circle px-3"></i>
+                <p class="m-0">Virtual Consultation</p>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Virtual Consultation Info Start -->
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="position-relative overflow-hidden rounded shadow-custom">
+                        <img class="img-fluid w-100" src="{% static 'assets/img/consultation.png' %}" alt="Virtual Consultation">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="pl-lg-4">
+                        <h6 class="d-inline-block text-primary text-uppercase bg-white py-1 px-2 mb-3">Virtual Consultation</h6>
+                        <h1 class="mb-4">Professional Skin Care Advice From Anywhere</h1>
+                        <p class="pl-4 border-left border-primary">Our virtual consultation service connects you with our expert dermatologists and skin care specialists from the comfort of your home. Get personalized advice, treatment recommendations, and follow-up care without the need to visit our center in person.</p>
+                        <div class="row pt-4">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="bg-white text-center p-4 rounded shadow-sm">
+                                    <h3 class="display-4 text-primary" data-toggle="counter-up">30</h3>
+                                    <h6 class="text-uppercase">Minute Sessions</h6>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-white text-center p-4 rounded shadow-sm">
+                                    <h3 class="display-4 text-primary" data-toggle="counter-up">98</h3>
+                                    <h6 class="text-uppercase">% Satisfaction Rate</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Virtual Consultation Info End -->
+
+    <!-- How It Works Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-6">
+                    <h6 class="d-inline-block bg-light text-primary text-uppercase py-1 px-2">How It Works</h6>
+                    <h1 class="mb-4">Easy 3-Step Process</h1>
+                    <p class="text-muted">Our virtual consultation process is designed to be simple, secure, and effective - providing you with expert dermatological care from anywhere.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="bg-light text-center p-5 h-100 rounded shadow-sm step-card">
+                        <div class="d-inline-block rounded-circle bg-primary text-white mb-4" style="width: 70px; height: 70px; line-height: 70px;">
+                            <i class="fa fa-calendar-alt fa-2x"></i>
+                        </div>
+                        <h3 class="text-primary mb-3">1. Book Appointment</h3>
+                        <p class="mb-0">Fill out our consultation form to schedule your virtual session. Select your preferred date, time, and specialist.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="bg-light text-center p-5 h-100 rounded shadow-sm step-card">
+                        <div class="d-inline-block rounded-circle bg-primary text-white mb-4" style="width: 70px; height: 70px; line-height: 70px;">
+                            <i class="fa fa-camera fa-2x"></i>
+                        </div>
+                        <h3 class="text-primary mb-3">2. Submit Photos</h3>
+                        <p class="mb-0">Upload clear photos of your skin concerns through our secure portal to help our specialists prepare for your consultation.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="bg-light text-center p-5 h-100 rounded shadow-sm step-card">
+                        <div class="d-inline-block rounded-circle bg-primary text-white mb-4" style="width: 70px; height: 70px; line-height: 70px;">
+                            <i class="fa fa-video fa-2x"></i>
+                        </div>
+                        <h3 class="text-primary mb-3">3. Connect Virtually</h3>
+                        <p class="mb-0">Join your consultation through our easy-to-use video platform. Get expert advice and personalized treatment plans.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="#bookingForm" class="btn btn-primary px-4 py-2">Schedule Your Consultation Now</a>
+            </div>
+        </div>
+    </div>
+    <!-- How It Works End -->
+
+    <!-- Instant Meeting Start -->
+    <div class="container-fluid py-5 bg-primary">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h6 class="d-inline-block text-uppercase bg-white text-primary py-1 px-2 mb-3">Quick Connect</h6>
+                    <h1 class="text-white mb-4">Start a Virtual Consultation Now</h1>
+                    <p class="text-white mb-4">Need immediate attention for your skin concern? Connect with our available specialists right away through our secure video platform. No appointment needed!</p>
+                    <ul class="list-inline text-white">
+                        <li class="py-2"><i class="fa fa-check-circle mr-3"></i>Instant access to skin care professionals</li>
+                        <li class="py-2"><i class="fa fa-check-circle mr-3"></i>Secure and private connection</li>
+                        <li class="py-2"><i class="fa fa-check-circle mr-3"></i>Works on any device with a camera</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-white p-5 rounded shadow">
+                        <h4 class="text-primary mb-4">Connect Instantly</h4>
+                        <div id="video-container" class="bg-light rounded mb-4" style="height: 300px; position: relative; overflow: hidden;">
+                            <!-- Video will be shown here -->
+                            <div id="video-placeholder" class="text-center d-flex align-items-center justify-content-center h-100">
+                                <div>
+                                    <i class="fa fa-video fa-3x text-primary mb-3"></i>
+                                    <p class="mb-0">Your video will appear here</p>
+                                </div>
+                            </div>
+                            <video id="local-video" class="w-100 h-100" style="object-fit: cover; display: none;" autoplay muted></video>
+                        </div>
+
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <select class="custom-select" id="service-quick">
+                                    <option value="" selected disabled>Select A Service</option>
+                                    <option value="1">General Skin Consultation</option>
+                                    <option value="2">Acne Treatment</option>
+                                    <option value="3">Eczema & Psoriasis</option>
+                                    <option value="4">Anti-Aging Consultation</option>
+                                    <option value="5">Skin Cancer Screening</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="custom-select" id="available-specialists">
+                                    <option value="" selected disabled>Choose Available Specialist</option>
+                                    <option value="1">Dr. Olivia Mia (Available Now)</option>
+                                    <option value="2">Dr. Cory Brown (Available in 5 min)</option>
+                                    <option value="3">Dr. Elizabeth Ross (Available Now)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button id="enable-video" class="btn btn-outline-primary" type="button">
+                                <i class="fa fa-video"></i> Enable Camera
+                            </button>
+                            <button id="start-meeting" class="btn btn-primary" type="button" disabled>
+                                <i class="fa fa-phone"></i> Start Consultation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Instant Meeting End -->
+
+       <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Book a Dermatology Consultation</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post" class="consultation-form">
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.non_field_errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="row">
+                                <!-- Hidden patient field if patient is provided -->
+                                {{ form.patient }}
+
+                                <!-- Specialist Selection -->
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-group">
+                                        <label for="{{ form.specialist.id_for_label }}" class="form-label fw-bold">
+                                            Select Specialist
+                                        </label>
+                                        {{ form.specialist.errors }}
+                                        <select name="{{ form.specialist.name }}" id="{{ form.specialist.id_for_label }}" class="form-select">
+                                            <option value="">---------</option>
+                                            {% for specialist in form.specialist.field.queryset %}
+                                                <option value="{{ specialist.id }}" {% if form.specialist.value == specialist.id %}selected{% endif %}>
+                                                    Dr. {{ specialist.user.first_name }} {{ specialist.user.last_name }} - {{ specialist.specialization }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Service Selection -->
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-group">
+                                        <label for="{{ form.service.id_for_label }}" class="form-label fw-bold">
+                                            Service Type
+                                        </label>
+                                        {{ form.service.errors }}
+                                        <select name="{{ form.service.name }}" id="{{ form.service.id_for_label }}" class="form-select">
+                                            <option value="">---------</option>
+                                            {% for service in form.service.field.queryset %}
+                                                <option value="{{ service.id }}" {% if form.service.value == service.id %}selected{% endif %}>
+                                                    {{ service.name }} - ${{ service.price }} ({{ service.duration }} min)
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Date and Time Selection -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group">
+                                        <label for="{{ form.date.id_for_label }}" class="form-label fw-bold">
+                                            Consultation Date
+                                        </label>
+                                        {{ form.date.errors }}
+                                        <input type="date" name="{{ form.date.name }}" id="{{ form.date.id_for_label }}"
+                                               class="form-control" value="{{ form.date.value|date:'Y-m-d' }}"
+                                               min="{% now 'Y-m-d' %}">
+                                        <small class="text-muted">{{ form.date.help_text }}</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group">
+                                        <label for="{{ form.time.id_for_label }}" class="form-label fw-bold">
+                                            Consultation Time
+                                        </label>
+                                        {{ form.time.errors }}
+                                        <input type="time" name="{{ form.time.name }}" id="{{ form.time.id_for_label }}"
+                                               class="form-control" value="{{ form.time.value|time:'H:i' }}">
+                                        <small class="text-muted">{{ form.time.help_text }}</small>
+                                    </div>
+                                </div>
+
+                                <!-- Concern Description -->
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-group">
+                                        <label for="{{ form.concern_description.id_for_label }}" class="form-label fw-bold">
+                                            Describe Your Skin Concern
+                                        </label>
+                                        {{ form.concern_description.errors }}
+                                        <textarea name="{{ form.concern_description.name }}"
+                                                  id="{{ form.concern_description.id_for_label }}"
+                                                  class="form-control" rows="4"
+                                                  placeholder="Please describe your skin concern in detail">{{ form.concern_description.value|default:'' }}</textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Skin Photos Selection -->
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-group">
+                                        <label class="form-label fw-bold">Select Skin Photos to Share</label>
+                                        {{ form.skin_photos.errors }}
+
+                                        {% if form.skin_photos.field.queryset.exists %}
+                                            <div class="row">
+                                                {% for photo in form.skin_photos.field.queryset %}
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="card">
+                                                            <img src="{{ photo.image.url }}" class="card-img-top" alt="Skin photo">
+                                                            <div class="card-body p-2">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox"
+                                                                           name="{{ form.skin_photos.name }}"
+                                                                           value="{{ photo.id }}"
+                                                                           id="id_skin_photos_{{ forloop.counter }}"
+                                                                           class="form-check-input"
+                                                                           {% if photo.id in form.skin_photos.value %}checked{% endif %}>
+                                                                    <label class="form-check-label" for="id_skin_photos_{{ forloop.counter }}">
+                                                                        {{ photo.description|truncatechars:50 }}
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-info">
+                                                You don't have any skin photos uploaded. <a href="">Upload photos</a> before booking a consultation.
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="{% url 'specialist_dashboard' %}" class="btn btn-secondary me-md-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Book Consultation</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-4 shadow">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">Consultation Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Your consultation booking will be confirmed once you submit this form. Here's what to expect:</p>
+                        <ul>
+                            <li>You'll receive a confirmation email with your booking details</li>
+                            <li>The specialist will review your skin photos and concern description before the appointment</li>
+                            <li>You'll be able to join the virtual consultation through our platform at the scheduled time</li>
+                            <li>Cancellations must be made at least 24 hours in advance to avoid cancellation fees</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonial Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-6">
+                    <h6 class="d-inline-block bg-light text-primary text-uppercase py-1 px-2">Testimonial</h6>
+                    <h1 class="mb-4">Virtual Consultation Success Stories</h1>
+                    <p class="text-muted">Hear from our patients who have experienced the convenience and effectiveness of our virtual consultations.</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="owl-carousel testimonial-carousel">
+                        <div class="text-center bg-light p-4 rounded">
+                            <div class="position-relative mb-4">
+                                <img class="img-fluid rounded-circle mx-auto" src="{% static 'assets/img/testimonial-1.jpg' %}" alt="">
+                                <div class="position-absolute top-100 start-50 translate-middle d-flex align-items-center justify-content-center bg-white rounded-circle" style="width: 60px; height: 60px; margin-top: -30px;">
+                                    <i class="fa fa-quote-right fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                            <p>The virtual consultation was so convenient! I was able to get expert advice for my acne without taking time off work. Dr. Mia provided a detailed treatment plan and followed up with me regularly. My skin has improved dramatically!</p>
+                            <hr class="w-25 mx-auto">
+                            <h6 class="text-uppercase">Sarah Johnson</h6>
+                            <span class="text-muted">Virtual Consultation Patient</span>
+                        </div>
+                        <div class="text-center bg-light p-4 rounded">
+                            <div class="position-relative mb-4">
+                                <img class="img-fluid rounded-circle mx-auto" src="{% static 'assets/img/testimonial-2.jpg' %}" alt="">
+                                <div class="position-absolute top-100 start-50 translate-middle d-flex align-items-center justify-content-center bg-white rounded-circle" style="width: 60px; height: 60px; margin-top: -30px;">
+                                    <i class="fa fa-quote-right fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                            <p>I was skeptical about a virtual skin consultation at first, but I was amazed by how thorough it was. Dr. Brown diagnosed my eczema and recommended treatments that actually worked. The follow-up care was excellent too.</p>
+                            <hr class="w-25 mx-auto">
+                            <h6 class="text-uppercase">Michael Thompson</h6>
+                            <span class="text-muted">Virtual Consultation Patient</span>
+                        </div>
+                        <div class="text-center bg-light p-4 rounded">
+                            <div class="position-relative mb-4">
+                                <img class="img-fluid rounded-circle mx-auto" src="{% static 'assets/img/testimonial-3.jpg' %}" alt="">
+                                <div class="position-absolute top-100 start-50 translate-middle d-flex align-items-center justify-content-center bg-white rounded-circle" style="width: 60px; height: 60px; margin-top: -30px;">
+                                    <i class="fa fa-quote-right fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                            <p>As someone living in a rural area, the virtual consultation option has been life-changing. I no longer have to drive 3 hours to see a dermatologist. Dr. Ross helped me with my rosacea, and I've seen tremendous improvement.</p>
+                            <hr class="w-25 mx-auto">
+                            <h6 class="text-uppercase">Emily Davis</h6>
+                            <span class="text-muted">Virtual Consultation Patient</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
+    <!-- FAQ Section Start -->
+    <div class="container-fluid py-5 bg-light-custom">
+        <div class="container py-5">
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-6">
+                    <h6 class="d-inline-block bg-light text-primary text-uppercase py-1 px-2">FAQs</h6>
+                    <h1 class="mb-4">Frequently Asked Questions</h1>
+                    <p class="text-muted">Find answers to common questions about our virtual consultation services.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="accordion shadow-sm rounded overflow-hidden" id="faqAccordion">
+                        <div class="card border-0 mb-3">
+                            <div class="card-header bg-light border-0" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-dark" type="button" data-toggle="collapse" data-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                                        <i class="fa fa-question-circle text-primary mr-2"></i> What technology do I need for a virtual consultation?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faq1" class="collapse" data-parent="#faqAccordion" aria-labelledby="headingOne">
+                                <div class="card-body">
+                                    You'll need a device with a camera (smartphone, tablet, or computer), a stable internet connection, and a quiet, well-lit space. Our platform works with most modern browsers without requiring additional software installation.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card border-0 mb-3">
+                            <div class="card-header bg-light border-0" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-dark" type="button" data-toggle="collapse" data-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                                        <i class="fa fa-question-circle text-primary mr-2"></i> How do I prepare for my virtual consultation?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faq2" class="collapse" data-parent="#faqAccordion" aria-labelledby="headingTwo">
+                                <div class="card-body">
+                                    For the best experience: 1) Find a private, well-lit area, 2) Have a list of your current medications and skin care products ready, 3) Upload clear photos of your skin concerns before the appointment, 4) Be prepared to discuss your medical history, and 5) Test your camera and microphone beforehand.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card border-0 mb-3">
+                            <div class="card-header bg-light border-0" id="headingThree">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-dark" type="button" data-toggle="collapse" data-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                                        <i class="fa fa-question-circle text-primary mr-2"></i> Is my virtual consultation private and secure?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faq3" class="collapse" data-parent="#faqAccordion" aria-labelledby="headingThree">
+                                <div class="card-body">
+                                    Yes, all our virtual consultations are conducted through a HIPAA-compliant platform with end-to-end encryption. Your medical information and photos are securely stored and only accessible to your healthcare provider. We take patient privacy and data security very seriously.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card border-0 mb-3">
+                            <div class="card-header bg-light border-0" id="headingFour">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-dark" type="button" data-toggle="collapse" data-target="#faq4" aria-expanded="false" aria-controls="faq4">
+                                        <i class="fa fa-question-circle text-primary mr-2"></i> Can I get prescriptions through a virtual consultation?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faq4" class="collapse" data-parent="#faqAccordion" aria-labelledby="headingFour">
+                                <div class="card-body">
+                                    Yes, our dermatologists can prescribe medications when medically necessary. Prescriptions can be sent electronically to your preferred pharmacy. However, certain medications may require in-person evaluation, which your provider will discuss with you during your consultation.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card border-0 mb-3">
+                            <div class="card-header bg-light border-0" id="headingFive">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-dark" type="button" data-toggle="collapse" data-target="#faq5" aria-expanded="false" aria-controls="faq5">
+                                        <i class="fa fa-question-circle text-primary mr-2"></i> What if I need to reschedule my virtual consultation?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faq5" class="collapse" data-parent="#faqAccordion" aria-labelledby="headingFive">
+                                <div class="card-body">
+                                    You can reschedule your appointment up to 24 hours before your scheduled time without any fee. Simply log into your patient portal or call our office at +254 112 694 614. Late cancellations or missed appointments may incur a fee as outlined in our appointment policy.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <p class="mb-4">Still have questions about our virtual consultation services?</p>
+                <a href="{% url 'contact' %}" class="btn btn-outline-primary">Contact Us</a>
+            </div>
+        </div>
+    </div>
+    <!-- FAQ Section End -->
+
+    <!-- Footer Start -->
+        <div class="footer container-fluid position-relative bg-dark py-5" style="margin-top: 90px;">
+            <div class="container pt-5">
+                <div class="row">
+                    <div class="col-lg-6 pr-lg-5 mb-5">
+                        <a href="index.html" class="navbar-brand">
+                            <h1 class="mb-3 text-white"><span class="text-primary">Skin</span>Connect</h1>
+                        </a>
+                        <p>
+                            DermaCare is a comprehensive dermatology management system designed to enhance patient care, streamline appointments,
+                            and provide accurate skin health diagnostics. Our platform integrates modern technology to support both dermatologists
+                            and patients in achieving optimal skin health.
+                        </p>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>Kilifi, Kenya</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>+254 112 694 614</p>
+                        <p><i class="fa fa-envelope mr-2"></i>info@skinconnect.com</p>
+                        <div class="d-flex justify-content-start mt-4">
+                            <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-lg btn-primary btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 pl-lg-5">
+                        <div class="row">
+                            <div class="col-sm-6 mb-5">
+                                <h5 class="text-white text-uppercase mb-4">Quick Links</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-5">
+                                <h5 class="text-white text-uppercase mb-4">Our Services</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Skin Consultation</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Acne Treatment</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Laser Therapy</a>
+                                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Anti-Aging Solutions</a>
+                                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Dermatology Insights</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-5">
+                                <h5 class="text-white text-uppercase mb-4">Newsletter</h5>
+                                <div class="w-100">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary px-4">Sign Up</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid bg-dark text-light border-top py-4" style="border-color: rgba(256, 256, 256, .15) !important;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                        <p class="m-0 text-white">&copy; <a href="#">SkinConnect</a>. All Rights Reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-right">
+                        <p class="m-0 text-white">Designed by <a href="#">Your Team</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Footer End -->
+
+    <!-- Video Call Modal -->
+    <div class="modal fade" id="videoCallModal" tabindex="-1" role="dialog" aria-labelledby="videoCallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="videoCallModalLabel">Virtual Consultation</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row no-gutters">
+                        <div class="col-md-8">
+                            <div class="video-call-main bg-dark" style="height: 400px; position: relative;">
+                                <!-- Doctor video will appear here -->
+                                <div id="remote-video-container" class="w-100 h-100 d-flex align-items-center justify-content-center">
+                                    <div class="text-center text-white">
+                                        <div class="spinner-border text-primary mb-3" role="status">
+                                            <span class="sr-only">Connecting...</span>
+                                        </div>
+                                        <p>Connecting to your specialist...</p>
+                                    </div>
+                                </div>
+
+                                <!-- Self view -->
+                                <div id="self-view" style="position: absolute; bottom: 10px; right: 10px; width: 120px; height: 90px; overflow: hidden; border-radius: 4px; border: 2px solid white;">
+                                    <video id="modal-local-video" style="width: 100%; height: 100%; object-fit: cover;" autoplay muted></video>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 bg-light">
+                            <div class="p-3">
+                                <h5 class="mb-3 text-primary" id="doctor-name">Dr. Olivia Mia</h5>
+                                <p class="text-muted small mb-3">Dermatology Specialist</p>
+
+                                <div class="consultation-info mb-4">
+                                    <p class="mb-1 small"><strong>Service:</strong> <span id="service-type">General Skin Consultation</span></p>
+                                    <p class="mb-3 small"><strong>Duration:</strong> <span id="call-timer">00:00</span></p>
+                                </div>
+
+                                <div class="chat-container bg-white p-2 rounded mb-3" style="height: 180px; overflow-y: auto;">
+                                    <div class="text-center text-muted small py-3">
+                                        <p>Chat functionality available during consultation</p>
+                                    </div>
+                                </div>
+
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Type a message..." disabled>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-primary" type="button" disabled>
+                                            <i class="fa fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary rounded-circle mx-1" id="toggle-mic">
+                        <i class="fa fa-microphone"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary rounded-circle mx-1" id="toggle-camera">
+                        <i class="fa fa-video"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary rounded-circle mx-1" id="toggle-chat">
+                        <i class="fa fa-comment"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger rounded-circle mx-1" data-dismiss="modal">
+                        <i class="fa fa-phone" style="transform: rotate(135deg);"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="{% static 'mail/jqBootstrapValidation.min.js' %}"></script>
+    <script src="{% static 'mail/contact.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        } else {
+                            event.preventDefault();
+                            // Show success message
+                            form.classList.add('was-validated');
+                            setTimeout(function() {
+                                alert('Your consultation has been booked! You will receive a confirmation email shortly.');
+                                form.reset();
+                                form.classList.remove('was-validated');
+                            }, 500);
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Initialize date and time pickers
+        // Initialize date and time pickers
+        $(function () {
+            // Make sure the elements exist before initialization
+            if ($("#date").length > 0) {
+                $('#date').datetimepicker({
+                    format: 'L',
+                    minDate: new Date(),
+                    daysOfWeekDisabled: [0, 6],
+                    icons: {
+                        time: 'fa fa-clock',
+                        date: 'fa fa-calendar',
+                        up: 'fa fa-arrow-up',
+                        down: 'fa fa-arrow-down',
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-calendar-check',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-times'
+                    }
+                });
+            }
+
+            if ($("#time").length > 0) {
+                $('#time').datetimepicker({
+                    format: 'LT',
+                    stepping: 30,
+                    enabledHours: [9, 10, 11, 12, 13, 14, 15, 16],
+                    icons: {
+                        time: 'fa fa-clock',
+                        date: 'fa fa-calendar',
+                        up: 'fa fa-arrow-up',
+                        down: 'fa fa-arrow-down',
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-calendar-check',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-times'
+                    }
+                });
+            }
+        });
+
+        // Variables for video elements
+    let localStream = null;
+    let enableCameraBtn = document.getElementById('enable-video');
+    let startMeetingBtn = document.getElementById('start-meeting');
+    let localVideo = document.getElementById('local-video');
+    let videoPlaceholder = document.getElementById('video-placeholder');
+    let modalLocalVideo = document.getElementById('modal-local-video');
+    let callTimer = null;
+    let callDuration = 0;
+
+    // Enable camera button
+    enableCameraBtn.addEventListener('click', async () => {
+        try {
+            // Request camera and microphone permissions
+            localStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+
+            // Display local video
+            localVideo.srcObject = localStream;
+            localVideo.style.display = 'block';
+            videoPlaceholder.style.display = 'none';
+
+            // Enable start meeting button
+            startMeetingBtn.disabled = false;
+
+            // Change button text
+            enableCameraBtn.innerHTML = '<i class="fa fa-video-slash"></i> Disable Camera';
+            enableCameraBtn.classList.remove('btn-outline-primary');
+            enableCameraBtn.classList.add('btn-outline-secondary');
+
+            // Change button functionality to disable camera
+            enableCameraBtn.removeEventListener('click', arguments.callee);
+            enableCameraBtn.addEventListener('click', disableCamera);
+
+        } catch (error) {
+            console.error('Error accessing media devices:', error);
+            alert('Unable to access your camera and microphone. Please check your device permissions.');
+        }
+    });
+
+    // Disable camera function
+    function disableCamera() {
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+            localStream = null;
+        }
+
+        localVideo.srcObject = null;
+        localVideo.style.display = 'none';
+        videoPlaceholder.style.display = 'flex';
+
+        // Disable start meeting button
+        startMeetingBtn.disabled = true;
+
+        // Reset button
+        enableCameraBtn.innerHTML = '<i class="fa fa-video"></i> Enable Camera';
+        enableCameraBtn.classList.remove('btn-outline-secondary');
+        enableCameraBtn.classList.add('btn-outline-primary');
+
+        // Change button functionality back to enable camera
+        enableCameraBtn.removeEventListener('click', disableCamera);
+        enableCameraBtn.addEventListener('click', arguments.callee);
+    }
+
+    // Start meeting button
+    startMeetingBtn.addEventListener('click', () => {
+        const serviceSelect = document.getElementById('service-quick');
+        const specialistSelect = document.getElementById('available-specialists');
+
+        // Validate form
+        if (serviceSelect.value === '' || specialistSelect.value === '') {
+            alert('Please select both a service and an available specialist.');
+            return;
+        }
+
+        // Set selected values in modal
+        document.getElementById('service-type').textContent =
+            serviceSelect.options[serviceSelect.selectedIndex].text;
+        document.getElementById('doctor-name').textContent =
+            specialistSelect.options[specialistSelect.selectedIndex].text.split(' (')[0];
+
+        // Copy video stream to modal
+        if (localStream) {
+            modalLocalVideo.srcObject = localStream;
+        }
+
+        // Show the modal
+        $('#videoCallModal').modal('show');
+
+        // Start the call timer
+        startCallTimer();
+
+        // Simulate specialist joining after a delay
+        setTimeout(simulateSpecialistJoining, 3000);
+    });
+
+    // Call timer function
+    function startCallTimer() {
+        callDuration = 0;
+        callTimer = setInterval(() => {
+            callDuration++;
+            const minutes = Math.floor(callDuration / 60).toString().padStart(2, '0');
+            const seconds = (callDuration % 60).toString().padStart(2, '0');
+            document.getElementById('call-timer').textContent = `${minutes}:${seconds}`;
+        }, 1000);
+    }
+
+    // Simulate specialist joining
+    function simulateSpecialistJoining() {
+        const remoteVideoContainer = document.getElementById('remote-video-container');
+
+        // Create remote video element
+        remoteVideoContainer.innerHTML = `
+            <img src="https://randomuser.me/api/portraits/women/45.jpg"
+                 class="w-100 h-100" style="object-fit: cover;" alt="Doctor">
+        `;
+    }
+
+    // Handle modal close
+    $('#videoCallModal').on('hidden.bs.modal', function () {
+        // Stop the timer
+        if (callTimer) {
+            clearInterval(callTimer);
+            callTimer = null;
+        }
+
+        // Reset the remote video container
+        document.getElementById('remote-video-container').innerHTML = `
+            <div class="text-center text-white">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="sr-only">Connecting...</span>
+                </div>
+                <p>Connecting to your specialist...</p>
+            </div>
+        `;
+    });
+
+    // Toggle microphone button
+    document.getElementById('toggle-mic').addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('fa-microphone')) {
+            icon.classList.replace('fa-microphone', 'fa-microphone-slash');
+            this.classList.add('btn-danger');
+            this.classList.remove('btn-outline-secondary');
+
+            if (localStream) {
+                localStream.getAudioTracks().forEach(track => track.enabled = false);
+            }
+        } else {
+            icon.classList.replace('fa-microphone-slash', 'fa-microphone');
+            this.classList.remove('btn-danger');
+            this.classList.add('btn-outline-secondary');
+
+            if (localStream) {
+                localStream.getAudioTracks().forEach(track => track.enabled = true);
+            }
+        }
+    });
+
+    // Toggle camera button
+    document.getElementById('toggle-camera').addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('fa-video')) {
+            icon.classList.replace('fa-video', 'fa-video-slash');
+            this.classList.add('btn-danger');
+            this.classList.remove('btn-outline-secondary');
+
+            if (localStream) {
+                localStream.getVideoTracks().forEach(track => track.enabled = false);
+            }
+        } else {
+            icon.classList.replace('fa-video-slash', 'fa-video');
+            this.classList.remove('btn-danger');
+            this.classList.add('btn-outline-secondary');
+
+            if (localStream) {
+                localStream.getVideoTracks().forEach(track => track.enabled = true);
+            }
+        }
+    });
+
+    </script>
+</body>
+</html>
